@@ -111,20 +111,35 @@ function main()
     }
 
     // Ball collision 
-    if ((ball.x < 0) || (ball.x > c.width))
+    if ((ball.x < 0) || (ball.x > c.width)) // LEFT OR RIGHT WALL
     {
+        let scorer
+        if (ball.x < 0) { // it hit the left wall
+            scorer = players[1]
+        }
+        else if (ball.x > c.width) { // it hit the right wall
+            scorer = players[0]
+        }
+        else { // fairly certain this should never happen but, just in case.
+            console.log("If you are seeing this, something went wrong.")
+        }
+
+        scorer.score += 1
+        console.log(`SCORE:  ${players[0].score} | ${players[1].score}`)
+
+        // send ball to center
         ball.x = c.width/2
-        ball.y = c.height/2
+        ball.y = c.height/2      
     }
-    if (ball.y < 0)
+    if (ball.y < 0) // TOP WALL
     {
         ball.y = 0
         ball.vy = -ball.vy
     }
-    if (ball.y > c.height)
+    if (ball.y > c.height) // BOTTOM WALL
     {
         ball.y = c.height
-        ball.vy = -ball.vy       
+        ball.vy = -ball.vy 
     }
 
     // players[0].pad with ball collision
