@@ -25,8 +25,8 @@ let fy = .97
 let ball = new Box();
 ball.w = 20
 ball.h = 20
-ball.vx = -2
-ball.vy = -2
+ball.vx = -8
+ball.vy = -8
 ball.color = `black`
 
 
@@ -66,57 +66,99 @@ function main()
 {
     // Erases the canvas
     ctx.clearRect(0,0,c.width,c.height)
+
+    let all_controls = [
+        {"up": `w`, "down": `s`}, // player 1: w and s
+        {"up": `ArrowUp`, "down": `ArrowDown`} // player 2: up and down arrow keys
+    ]
+
+    // PADDLE MOVEMENT -----------------------------------------------
+
+    for (let i = 0; i < players.length; i++) {
+        let controls = all_controls[i]
+        let pad = players[i].pad
+
+        // if current iteration refers to player 1, value is "w"; if current iteration refers to player 2, value is "ArrowUp"
+        if (keys[controls["up"]]) { 
+            pad.vy += -pad.force
+        }
+        // same as above but for downwards movement
+        if (keys[controls["down"]]) {
+            pad.vy += pad.force
+        }
+
+        // friction
+        pad.vy *= fy
+        // player movement
+        pad.move()
+    }
     
-    // p1 accelerates when key is pressed 
-    if(keys[`w`])
-    {
-       players[0].pad.vy += -players[0].pad.force
-    }
+    // // p1 accelerates when key is pressed 
+    // if(keys[`w`])
+    // {
+    //    players[0].pad.vy += -players[0].pad.force
+    // }
 
-    if(keys[`s`])
-    {
-        players[0].pad.vy += players[0].pad.force
-    }
+    // if(keys[`s`])
+    // {
+    //     players[0].pad.vy += players[0].pad.force
+    // }
 
-    if (keys[`ArrowUp`]) {
-        players[1].pad.vy += -players[1].pad.force
-    }
+    // if (keys[`ArrowUp`]) {
+    //     players[1].pad.vy += -players[1].pad.force
+    // }
     
-    if (keys[`ArrowDown`]) {
-        players[1].pad.vy += players[1].pad.force
-    }
+    // if (keys[`ArrowDown`]) {
+    //     players[1].pad.vy += players[1].pad.force
+    // }
 
-    // Applies friction
-    players[0].pad.vy *= fy
-    players[1].pad.vy *= fy
-    // Player movement
-    players[0].pad.move();
-    players[1].pad.move();
+    // // Applies friction
+    // players[0].pad.vy *= fy
+    // players[1].pad.vy *= fy
+    // // Player movement
+    // players[0].pad.move();
+    // players[1].pad.move();
 
     // Ball movement
     ball.move()
 
-    // players[0].pad collision
-    if (players[0].pad.y < 0+players[0].pad.h/2)
-    {
-        players[0].pad.y = 0+players[0].pad.h/2
-    }
-    if (players[0].pad.y > c.height-players[0].pad.h/2)
-    {
-        players[0].pad.y = c.height-players[0].pad.h/2
+
+    // PADDLE WALL COLLISION -----------------------------------------------
+
+    for (let i = 0; i < players.length; i++) {
+        let pad = players[i].pad
+
+        if (pad.y < 0 + pad.h/2) {
+            pad.y = 0 + pad.h/2
+        }
+        if (pad.y > c.height - pad.h/2) {
+            pad.y = c.height - pad.h/2
+        }
     }
 
-    // players[1].pad collision
-    if (players[1].pad.y < 0+players[1].pad.h/2)
-    {
-        players[1].pad.y = 0+players[1].pad.h/2
-    }
-    if (players[1].pad.y > c.height-players[1].pad.h/2)
-    {
-        players[1].pad.y = c.height-players[1].pad.h/2
-    }
 
-    // Ball collision 
+    // // players[0].pad collision
+    // if (players[0].pad.y < 0+players[0].pad.h/2)
+    // {
+    //     players[0].pad.y = 0+players[0].pad.h/2
+    // }
+    // if (players[0].pad.y > c.height-players[0].pad.h/2)
+    // {
+    //     players[0].pad.y = c.height-players[0].pad.h/2
+    // }
+
+    // // players[1].pad collision
+    // if (players[1].pad.y < 0+players[1].pad.h/2)
+    // {
+    //     players[1].pad.y = 0+players[1].pad.h/2
+    // }
+    // if (players[1].pad.y > c.height-players[1].pad.h/2)
+    // {
+    //     players[1].pad.y = c.height-players[1].pad.h/2
+    // }
+
+    // BALL WALL COLLISION ----------------------------------------------------------
+    
     if ((ball.x < 0) || (ball.x > c.width)) // LEFT OR RIGHT WALL
     {
         let scorer
@@ -148,28 +190,57 @@ function main()
         ball.vy = -ball.vy 
     }
 
-    // players[0].pad with ball collision
-    if (ball.collide(players[0].pad))
-    {
-        ball.x = players[0].pad.x + players[0].pad.w/2 + ball.w/2
-        ball.vx = -ball.vx;
+
+    // PADDLE BALL COLLISION ---------------------------------------------------------------
+
+    for (let i = 0; i < players.length; i++) {
+        let pad = players[i].pad
+        
+        if (ball.collide(pad)) {
+            if (i == 0) { // player 1
+                ball.x = pad.x + pad.w/2 + ball.w/2
+            }
+            else if (i == 1) { // player 2
+                ball.x = pad.x - pad.w/2 - ball.w/2
+            }
+            else {
+                console.log("ERROR: There are more than 2 players in the players array.")
+            }
+            ball.vx = -ball.vx // inverts balls horizontal velocity
+        }
     }
 
-    // players[1].pad with ball collision
-    if (ball.collide(players[1].pad))
-    {
-        ball.x = players[1].pad.x - players[1].pad.w/2 - ball.w/2
-        ball.vx = -ball.vx;
-    }
 
-    // Draw the objects
-    players[0].pad.draw()
-    players[1].pad.draw()
+    // // players[0].pad with ball collision
+    // if (ball.collide(players[0].pad))
+    // {
+    //     ball.x = players[0].pad.x + players[0].pad.w/2 + ball.w/2
+    //     ball.vx = -ball.vx;
+    // }
+
+    // // players[1].pad with ball collision
+    // if (ball.collide(players[1].pad))
+    // {
+    //     ball.x = players[1].pad.x - players[1].pad.w/2 - ball.w/2
+    //     ball.vx = -ball.vx;
+    // }
+
+    // Draw the objects --------------------------------------------------
+
+    for (let i = 0; i < players.length; i++) {
+        let pad = players[i].pad
+        pad.draw()
+    }
+    // players[0].pad.draw()
+    // players[1].pad.draw()
+
     ball.draw()
 
     // update scoreboard
+    // note: it would probably be more efficient to update this when a point is scored instead of refreshing every frame
     for (let i = 0; i < scoreboard_divs.length; i++) {
         scoreboard_divs[i].innerHTML = players[i].score
     }
+
 
 }
