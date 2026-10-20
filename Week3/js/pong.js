@@ -29,6 +29,17 @@ ball.vx = -2
 ball.vy = -2
 ball.color = `black`
 
+let test = new Player();
+
+
+let players = [];
+players[0] = new Player();
+players[1] = new Player();
+
+players[0].pad = p1
+players[1].pad = p2
+
+console.log(players)
 
 
 function main()
