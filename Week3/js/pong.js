@@ -56,6 +56,12 @@ players[1].pad = pads[1]
 console.log(players)
 console.log(pads)
 
+
+// scoreboard display
+let scoreboard_divs = document.querySelectorAll('#score div')
+
+
+
 function main()
 {
     // Erases the canvas
@@ -160,4 +166,10 @@ function main()
     players[0].pad.draw()
     players[1].pad.draw()
     ball.draw()
+
+    // update scoreboard
+    for (let i = 0; i < scoreboard_divs.length; i++) {
+        scoreboard_divs[i].innerHTML = players[i].score
+    }
+
 }
