@@ -51,6 +51,7 @@ for (let i in fill_inputs) {
     ball_fill_display.innerHTML = ball.fill
 }
 
+// New custom feature implementation
 // ball color UI
 ball_fill_input.addEventListener("input", function(e) {
     ball.fill = e.target.value
