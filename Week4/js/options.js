@@ -22,12 +22,16 @@ header_options.addEventListener("click", function() {
 -----------*/
 let fill_inputs = []
 let fill_displays = []
+let stroke_inputs = []
+let stroke_displays = []
 let up_inputs = []
 let down_inputs = []
 let straight_inputs = []
 for (let div_op of section_options.getElementsByClassName("op")) {
     fill_inputs.push(div_op.getElementsByClassName("fill")[0])              // [0] because what i want is inside another object
     fill_displays.push(div_op.getElementsByClassName("filldisplay")[0])
+    stroke_inputs.push(div_op.getElementsByClassName("stroke")[0])
+    stroke_displays.push(div_op.getElementsByClassName("strokedisplay")[0])
     up_inputs.push(div_op.getElementsByClassName("u")[0])
     down_inputs.push(div_op.getElementsByClassName("d")[0])
     straight_inputs.push(div_op.getElementsByClassName("s")[0])
@@ -37,6 +41,8 @@ for (let div_op of section_options.getElementsByClassName("op")) {
 for (let i in fill_inputs) {
     fill_inputs[i].value = pad[i].fill
     fill_displays[i].innerHTML = pad[i].fill
+    stroke_inputs[i].value = pad[i].stroke
+    stroke_displays[i].innerHTML = pad[i].stroke
 }
 
 // makes fill UI actually change game settings
@@ -46,7 +52,13 @@ for (let i in fill_inputs) {
         fill_displays[i].innerHTML = pad[i].fill
     })
 }
-
+// stroke UI
+for (let i in stroke_inputs) {
+    stroke_inputs[i].addEventListener("input", function() {
+        pad[i].stroke = stroke_inputs[i].value
+        stroke_displays[i].innerHTML = pad[i].stroke
+    })
+}
 
 
 /*---------
