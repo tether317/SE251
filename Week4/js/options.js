@@ -27,7 +27,11 @@ let stroke_displays = []
 let up_inputs = []
 let down_inputs = []
 let straight_inputs = []
-for (let div_op of section_options.getElementsByClassName("op")) {
+
+let ball_fill_input = document.getElementById("ballfill")
+let ball_fill_display = document.getElementById("balldisplay")
+
+for (let div_op of section_options.getElementsByClassName("op playerOp")) {
     fill_inputs.push(div_op.getElementsByClassName("fill")[0])              // [0] because what i want is inside another object
     fill_displays.push(div_op.getElementsByClassName("filldisplay")[0])
     stroke_inputs.push(div_op.getElementsByClassName("stroke")[0])
@@ -43,7 +47,15 @@ for (let i in fill_inputs) {
     fill_displays[i].innerHTML = pad[i].fill
     stroke_inputs[i].value = pad[i].stroke
     stroke_displays[i].innerHTML = pad[i].stroke
+    ball_fill_input.value = ball.fill
+    ball_fill_display.innerHTML = ball.fill
 }
+
+// ball color UI
+ball_fill_input.addEventListener("input", function(e) {
+    ball.fill = e.target.value
+    ball_fill_display.innerHTML = ball.fill
+})
 
 // makes fill UI actually change game settings
 for (let i in fill_inputs) {
