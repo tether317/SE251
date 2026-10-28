@@ -20,6 +20,7 @@ var player = [
 ]
 
 
+
 init();
 
 //Main Game Loop
