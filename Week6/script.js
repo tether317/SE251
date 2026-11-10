@@ -25,7 +25,11 @@ document.getElementById(`add`).addEventListener(`click`, function(e) {
 
     let checkbox = document.createElement(`input`)
     checkbox.setAttribute(`type`, `checkbox`)
-    checkbox.classList.add(`selectionCheckbox`, `hidden`)
+    checkbox.classList.add(`selectionCheckbox`)
+    // Add or dont add hidden class depending on if bulk delete mode is enabled
+    if (document.getElementById(`confirm`).classList.contains(`hidden`)) {
+        checkbox.classList.add(`hidden`)
+    }
 
     let p = document.createElement(`p`)
     p.textContent = document.getElementsByTagName(`textarea`)[0].value
